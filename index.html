@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html/">
+<title>Factura DOM </title>
+<script type="text/JavaScript" src="matematicas.js"></script>
+
+<style>
+#logo{
+	float:right;
+	width:50px;
+	height:50px;
+	margin-right:25%;
+}
+.empresa
+	{
+	border:1px solid black;
+	width:43%;
+	height:250px;
+	float:left;
+	background-color:lightpink;
+	padding-left:2%;
+	}
+.cliente{
+	border:1px solid black;
+	width:43%;
+	height:250px;
+	float:left;
+	background-color:lightblue;
+	padding-left:2%;
+}
+
+.conceptos,.resultados
+	{
+		/*border:1px solid black;*/
+		width:90%;
+		height:auto;
+		clear:left;
+		margin-top:50px;
+	}
+.conceptos{
+	padding-left:10%;
+}
+	
+.resultados{
+	border:1px solid red;
+	padding-left:2%;
+}
+	
+tr:hover{
+	color:blue;
+}
+	
+/*table
+	{
+		border:1px solid red;
+	}*/
+
+#TablaConceptos td:nth-child(3), #TablaConceptos td:nth-child(4), #TablaConceptos td:nth-child(5){
+		text-align:right;
+}
+
+#TablaConceptos tr:nth-child(2n){
+		background-color:silver;
+}
+
+
+@media print  /*consulta de medios de impresión*/
+	{
+		div.resultados
+		{
+			display:block;
+			page-break-inside:avoid; /*evitamos rotura del div resultados*/
+		}
+		button  /*ocultamos botones*/
+		{
+			visibility:hidden;
+		}
+		#TablaConceptos td:nth-child(6) /*Oculta la columna 6 de la tabla*/
+		{
+			visibility:hidden;
+		}
+	.empresa,.cliente
+	{
+	background-color:white;
+	}
+	}
+	
+</style>
+ 
+<script>
+grabada=1;
+num_conceptos.value=0;
+function EliminarProducto(r){
+	if(grabada==1){
+		var i=r.parentNode.parentNode.rowIndex;
+		mitabla.deleteRow(i);
+		num_conceptos.value--;
+		
+	}
+}
+function Insertar2(r){
+	if(grabada==1)
+	{
+		mitabla=document.getElementById("TablaConceptos");
+		var i=r.parentNode.parentNode.rowIndex;
+		filan=mitabla.insertRow(i+1);
+		c0=filan.insertCell(0);
+		c1=filan.insertCell(1);
+		c2=filan.insertCell(2);
+		c3=filan.insertCell(3);
+		c4=filan.insertCell(4);
+		c5=filan.insertCell(5);
+		
+		c0.innerHTML="<input id='codigo2' value='1'size='4'>";
+		c1.innerHTML="<input id='concepto2' value='uvas' size='5'>";
+		c2.innerHTML="<input id='precio2' value='1' size='4' type='number'>";
+		c3.innerHTML="<input id='cantidad2' value='1' size='4' type='number'>";
+		c5.innerHTML="<button onclick='EliminarProducto(this)'>-</button>";
+		c5.innerHTML=c5.innerHTML+"<button onclick='Insertar2(this)'>+</button>";
+		c5.innerHTML=c5.innerHTML+"<button onclick='Grabar(this)'>Grabar</button>";
+		grabada=0;
+		
+		if(num_conceptos==8)
+		{
+		mitabla=document.getElementById("TablaConceptos");
+		var i=r.parentNode.parentNode.rowIndex;
+		filan=mitabla.insertRow(i+1);
+		c0=filan.insertCell(0);
+		c1=filan.insertCell(1);
+		c2=filan.insertCell(2);
+		c3=filan.insertCell(3);
+		c4=filan.insertCell(4);
+		c5=filan.insertCell(5);
+		
+		c0.innerHTML="<strong>Código</strong>";
+		c1.innerHTML="<strong>Concepto</strong>";
+		c2.innerHTML="<strong>Precio</strong>";
+		c3.innerHTML="<strong>Unidades</strong>";
+		c4.innerHTML="<strong>Subtotal</strong>";
+		c5.innerHTML="";
+		
+		}
+	
+		
+	}
+}
+    
+    function Grabar(r){
+		if(grabada==0){
+			if((precio2.value=="")||(cantidad2.value=="")||NosoloNumeros(precio2.value)||NosoloNumeros(cantidad2.value)){
+				alert("Error en precio y/o cantidad de línea actual");
+				grabada=0;
+			}else{
+    			r.parentNode.parentNode.firstChild.innerHTML=codigo2.value;
+				r.parentNode.parentNode.firstChild.nextSibling.innerHTML=concepto2.value;
+				op1=parseFloat(precio2.value);
+				op2=parseFloat(cantidad2.value);
+				result=op1*op2;
+				r.parentNode.parentNode.firstChild.nextSibling.nextSibling.innerHTML=op1.toFixed(2)+" €";
+				r.parentNode.parentNode.firstChild.nextSibling.nextSibling.nextSibling.innerHTML=cantidad2.value;				
+				r.parentNode.parentNode.firstChild.nextSibling.nextSibling.nextSibling.nextSibling.innerHTML=result.toFixed(2)+" €";
+				grabada=1;
+			}
+			num_conceptos.value++;
+		}
+	}
+</script>
+</head>
+ 
+<body>
+<div id="logo">
+    <img src="JF.png" alt="logo" width="150%">
+	</div>
+    <h1>FACTURACIÓN ONLINE</h1>
+    
+    <div class="empresa">
+		<form action="#" method="post" name="Emisor">
+		
+			<h2>Empresa:</h2>
+			<input id="Nombre" name="Nombre" type="text" value="Multiformación S.A." size="20" disabled><br>
+			<input id="Direccion" name="Direccion" type="text" value="Calle Polo de Medina, 21 (Murcia)" size="30" maxlength="60" disabled><br>
+			<input id="CP" name="CP" type="text" value="30001" size="5" disabled><br>
+			<input id="DNI" name="DNI" type="text" value="11111111" size="8" disabled>
+			-<input id="Letra" name="Letra" type="text" value="X" size="1" disabled>
+			
+			<br><br>
+			Número Factura:<input id="nfactura" name="nfactura" type="text" size="4"><br>			
+			Fecha Factura:<input id="fecha" name="fecha" type="text"><br>  <!-- type tipo date saca la fecha por defecto, si la ponemos en el script ha de ser tipo texto -->
+			Número Conceptos: <input id="num_conceptos" name="num_conceptos" type="text">
+					
+		</form>
+	</div>
+	
+
+
+	<div class="cliente">
+	       <h2>Cliente:</h2>		   
+		<form action="#" method="post" name="cliente"> 
+        <table width="60%" border="0px">
+          <tr>
+            <td width="29%">Nombre: </td>
+            <td width="71%"><input id="Nombre_C" name="Nombre_C" type="text"  size="20"></td>
+          </tr>
+          <tr>
+            <td>Dirección:</td>
+            <td><input id="Direccion_C" name="Direccion_C" type="text"  size="35"></td>
+          </tr>
+          <tr>
+            <td>C.P.</td>
+            <td><input id="CP_C" name="CP_C" type="text"  size="5"></td>
+          </tr>
+          <tr>
+            <td>NIF</td>
+            <td><input id="DNI_C" name="DNI_C" type="text"  size="8" maxlength="8"> <!-- maxlength deja de escribir a los 8 dígitos -->
+            -<input id="Letra_C" name="Letra_C" type="text" size="1" onFocus="letraDNI();"></td>
+          </tr>
+        </table>
+		</form>
+      	<br>
+	</div>
+
+	
+
+	<script type="text/JavaScript">        /*en este script hacemos que ponga la fecha directamente*/
+				var f=new Date();          //Date(2016,3,8)    //New es aplicable solo sobre objetos//  //Donde pone 3 es para el mes como es un array se pone un valor menos del mes que queremos que saque//
+				var meses=new Array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre");
+				fecha.value=(f.getDate() + " de " + (meses[f.getMonth()]) + " de " + f.getFullYear());
+				//alert(f);
+	</script>
+	
+	
+	
+	<div class="conceptos">
+		<table id="TablaConceptos" width="80%" height="100px" border="1">
+    		<tr>
+    			<th>Código</th>
+    			<th>Concepto</th>
+    			<th>Precio</th>
+    			<th>Cantidad</th>
+           	 	<th>Subtotal <button onclick='Insertar2(this)'>+</button></th>
+                
+         	</tr>
+           
+    	</table>
+	</div>
+	
+	
+	
+    <div class="resultados">
+		<form>
+    	
+      <p>Dto %:<input id="dto" name="dto" type="text" value="5" size="2" maxlength="2">
+      Dto €:<input id="valordto" name="valordto" type="text" disabled></p>
+      <p>Neto:<input id="neto" name="neto" type="text" disabled></p>
+      <p>iva %:<input id="tipo" name="tipo" type="text" value="21" size="2" maxlength="2">
+      Iva:<input id="valoriva" name="valoriva" type="text" disabled></p>
+      <p>Total:<input id="total" name="total" type="text" disabled></p><br>
+      <p><input type="button" name="btn" id="btn" value="Calcular" onclick="RecorrerTabla();" style="cursor:pointer">
+      Subtotal:<input id="subtotal" name="subtotal" type="text" disabled></p><br>
+      <input type="button" value="IMPRIMIR" onClick="window.print()">
+	  </form>
+    </div>
+    
+	
+</body>
+</html>
